@@ -1,0 +1,43 @@
+version: 2
+
+general:
+  branches:
+    only:
+      - master
+
+jobs:
+  build:
+    working_directory: ~/store-service
+
+    docker:
+      - image: circleci/openjdk:8u181-jdk
+
+    environment:
+      JVM_OPTS: -Xmx2g
+
+    steps:
+      - checkout
+
+      - run:
+          name: Granting chmod permission
+          command: sudo chmod +x ./gradlew
+
+      - restore_cache:
+          key: store-service-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - restore_cache:
+          key: store-service-cache-{{ checksum "build.gradle.kts" }}
+
+      - run:
+          name: Running tests
+          command: ./gradlew clean test integrationTest
+
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: store-service-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: store-service-cache-{{ checksum "build.gradle.kts" }}
