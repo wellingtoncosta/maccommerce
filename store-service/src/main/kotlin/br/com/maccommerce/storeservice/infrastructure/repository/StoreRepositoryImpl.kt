@@ -1,14 +1,18 @@
-package br.com.maccommerce.storeservice.resources.repository
+package br.com.maccommerce.storeservice.infrastructure.repository
 
 import br.com.maccommerce.storeservice.commons.Loggable
 import br.com.maccommerce.storeservice.domain.entity.Store
 import br.com.maccommerce.storeservice.domain.exception.DatabaseException
 import br.com.maccommerce.storeservice.domain.repository.StoreRepository
-import br.com.maccommerce.storeservice.resources.entity.StoreTable
-import br.com.maccommerce.storeservice.resources.extension.toStore
+import br.com.maccommerce.storeservice.infrastructure.entity.StoreTable
+import br.com.maccommerce.storeservice.infrastructure.extension.toStore
 import io.azam.ulidj.ULID
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 class StoreRepositoryImpl : StoreRepository {
 

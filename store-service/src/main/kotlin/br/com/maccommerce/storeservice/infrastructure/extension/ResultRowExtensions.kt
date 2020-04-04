@@ -1,7 +1,7 @@
-package br.com.maccommerce.storeservice.resources.extension
+package br.com.maccommerce.storeservice.infrastructure.extension
 
 import br.com.maccommerce.storeservice.domain.entity.Store
-import br.com.maccommerce.storeservice.resources.entity.StoreTable
+import br.com.maccommerce.storeservice.infrastructure.entity.StoreTable
 import org.jetbrains.exposed.sql.ResultRow
 
 fun ResultRow.toStore() = Store(

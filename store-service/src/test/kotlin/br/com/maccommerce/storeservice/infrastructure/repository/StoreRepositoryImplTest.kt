@@ -1,4 +1,4 @@
-package br.com.maccommerce.storeservice.resources.repository
+package br.com.maccommerce.storeservice.infrastructure.repository
 
 import br.com.maccommerce.storeservice.domain.exception.DatabaseException
 import br.com.maccommerce.storeservice.store
