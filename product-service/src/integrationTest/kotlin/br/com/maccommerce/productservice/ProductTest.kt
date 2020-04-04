@@ -11,6 +11,7 @@ import br.com.maccommerce.productservice.domain.entity.Product
 import br.com.maccommerce.productservice.domain.exception.ApiExceptionType
 import io.azam.ulidj.ULID
 import io.mockk.unmockkAll
+import io.zonky.test.db.postgres.embedded.EmbeddedPostgres
 import org.flywaydb.core.Flyway
 import org.http4k.client.ApacheClient
 import org.http4k.core.MemoryRequest
@@ -22,21 +23,36 @@ import org.http4k.core.Uri
 import org.http4k.format.Jackson
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import javax.sql.DataSource
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 object ProductTest : Spek({
 
-    val embeddedPostgres = DatabaseMock.startServer(5433)
+    lateinit var embeddedPostgres: EmbeddedPostgres
 
-    val dataSource = embeddedPostgres.postgresDatabase
+    lateinit var dataSource: DataSource
 
-    beforeGroup { DependenciesMock.loadKoinProperfiesFromFile().also { App.start() } }
+    beforeGroup {
+        embeddedPostgres = DatabaseMock.startServer(5433)
 
-    afterGroup { unmockkAll().also { App.stop() } }
+        dataSource = embeddedPostgres.postgresDatabase
 
-    beforeEachTest { Flyway.configure().run { dataSource(dataSource).load() }.apply { clean().also { migrate() } } }
+        DependenciesMock.loadKoinProperfiesFromFile().also { App.start() }
+    }
+
+    afterGroup {
+        embeddedPostgres.close()
+
+        unmockkAll().also { App.stop() }
+    }
+
+    beforeEachTest {
+        Flyway.configure()
+            .run { dataSource(dataSource).load() }
+            .apply { clean().also { migrate() } }
+    }
 
     describe("Product Tests") {
 
